@@ -1,0 +1,31 @@
+import socket
+import json
+
+def start_my_server():
+	print("Сервер запущен.")
+	try:
+		server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+		server.bind(('',  8443))
+		server.listen(1)
+		while True:
+			client_socket, address = server.accept()
+			try:
+				data = client_socket.recv(1024).decode('utf-8')
+			except:
+				data = client_socket.recv(1024)
+			return_client_data(data)
+			client_socket.shutdown(socket.SHUT_WR)
+	except KeyboardInterrupt:
+		server.close()
+		print("Сервер был выключен...")
+
+
+def return_client_data(request):
+	try:
+		request = json.loads(request)
+		print("id: "+ str(request["id"]))
+	except:
+		print(request)
+
+if __name__ == '__main__':
+	start_my_server()
